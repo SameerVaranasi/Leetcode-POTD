@@ -1,69 +1,38 @@
 class Solution {
     public int stoneGameV(int[] stoneValue) {
-
         int n = stoneValue.length;
         int[][] dp = new int[n][n];
-
+        
+        // Prefix sum array for O(1) range sum lookups
+        int[] prefix = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + stoneValue[i];
+        }
+        
+        // Interval DP by length
         for (int len = 2; len <= n; len++) {
-
             for (int l = 0; l + len <= n; l++) {
-
                 int r = l + len - 1;
-
-                int i = l;
-                int j = r;
-
-                int leftSum = stoneValue[i];
-                int rightSum = stoneValue[j];
-
-                while (i < j) {
-
+                int total = prefix[r + 1] - prefix[l];
+                int maxScore = 0;
+                
+                for (int k = l; k < r; k++) {
+                    int leftSum = prefix[k + 1] - prefix[l];
+                    int rightSum = total - leftSum;
+                    
                     if (leftSum < rightSum) {
-
-                        dp[l][r] = Math.max(
-                            dp[l][r],
-                            leftSum + dp[l][i]
-                        );
-
-                        i++;
-                        leftSum += stoneValue[i];
-
+                        // Optimization: if current score + leftSum can't beat maxScore, skip if needed
+                        maxScore = Math.max(maxScore, leftSum + dp[l][k]);
                     } else if (rightSum < leftSum) {
-
-                        dp[l][r] = Math.max(
-                            dp[l][r],
-                            rightSum + dp[j][r]
-                        );
-
-                        j--;
-                        rightSum += stoneValue[j];
-
+                        maxScore = Math.max(maxScore, rightSum + dp[k + 1][r]);
                     } else {
-
-                        dp[l][r] = Math.max(
-                            dp[l][r],
-                            leftSum + Math.max(
-                                dp[l][i],
-                                dp[j][r]
-                            )
-                        );
-
-                        i++;
-                        j--;
-
-                        if (i < n)
-                            leftSum += stoneValue[i];
-
-                        if (j >= 0)
-                            rightSum += stoneValue[j];
+                        maxScore = Math.max(maxScore, leftSum + Math.max(dp[l][k], dp[k + 1][r]));
                     }
                 }
+                dp[l][r] = maxScore;
             }
         }
-
+        
         return dp[0][n - 1];
     }
 }
-
-
-//pruning optimization
