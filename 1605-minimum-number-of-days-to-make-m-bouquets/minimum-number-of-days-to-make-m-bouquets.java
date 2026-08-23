@@ -13,7 +13,7 @@ class Solution {
 
         while(start <= end){
             int mid = start + (end - start) / 2;
-            int bouquets = testBouquet(bloomDay, k, mid);
+            int bouquets = possible(bloomDay, k, mid);
 
             if(bouquets < m){
                 start = mid + 1;
@@ -27,7 +27,7 @@ class Solution {
 
 
     }
-    int testBouquet(int[] bloomDay, int k, int day){
+    int possible(int[] bloomDay, int k, int day){
         int bouquet = 0;
         int flower = 0;
         for(int i = 0; i<bloomDay.length; i++){
