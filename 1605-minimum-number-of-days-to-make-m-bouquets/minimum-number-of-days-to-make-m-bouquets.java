@@ -1,55 +1,47 @@
 class Solution {
     public int minDays(int[] bloomDay, int m, int k) {
-
-        long total = (long)m * k;
-
-        if(total > bloomDay.length)
+        if( bloomDay.length < (long) m*k){
             return -1;
-
-        int low = Integer.MAX_VALUE;// maximum value
-        int high = Integer.MIN_VALUE;//minimum value
-
-        for(int day : bloomDay) {
-            low = Math.min(low, day);
-            high = Math.max(high, day);
+        }
+        int max = bloomDay[0];
+        for(int i: bloomDay){
+            max = Math.max(max, i);
         }
 
-        int ans = high;
+        int start = 1;
+        int end = max;
 
-        while(low <= high) {
-            int mid = low + (high - low) / 2;
+        while(start <= end){
+            int mid = start + (end - start) / 2;
+            int bouquets = testBouquet(bloomDay, k, mid);
 
-            if(possible(bloomDay, mid, m, k)) {
-                ans = mid;
-                high = mid - 1;
+            if(bouquets < m){
+                start = mid + 1;
             }
-            else {
-                low = mid + 1;
+            else{
+
+                end = mid - 1;
             }
         }
+        return start;
 
-        return ans;
+
     }
-
-    static boolean possible(int[] bloomDay, int day, int m, int k) {
-        int flowers = 0;
-        int bouquets = 0;
-
-        for(int i = 0; i < bloomDay.length; i++) {
-
-            if(bloomDay[i] <= day) {
-                flowers++;
-
-                if(flowers == k) {
-                    bouquets++;
-                    flowers = 0;
+    int testBouquet(int[] bloomDay, int k, int day){
+        int bouquet = 0;
+        int flower = 0;
+        for(int i = 0; i<bloomDay.length; i++){
+            if(bloomDay[i] - day <= 0){
+                flower ++;
+                if(flower == k){
+                    bouquet ++;
+                    flower = 0;
                 }
             }
-            else {
-                flowers = 0;
+            else{
+                flower = 0;
             }
         }
-
-        return bouquets >= m;
+        return bouquet;
     }
 }
