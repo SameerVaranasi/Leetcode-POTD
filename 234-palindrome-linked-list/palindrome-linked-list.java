@@ -8,22 +8,35 @@
  *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
  * }
  */
- import java.util.*;
 class Solution {
     public boolean isPalindrome(ListNode head) {
-        // using the stack we will be solving the problem 
-        Stack<Integer> nums = new Stack<>();   
-        ListNode temp = head;
-        while(temp!=null){
-            nums.push(temp.val);
-            temp=temp.next;
+        //now lets do by using two-pointers 
+        ListNode slow =head;
+        ListNode fast = head; 
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
         }
-        temp = head;
-        while(temp!= null){
-            if(temp.val!=nums.pop()){return false;}
-            temp=temp.next;
+        // now lets reverse the LL 
+        ListNode prev =  null;
+        ListNode current = slow;
+        while(current != null){
+            ListNode next = current.next;
+            current.next=prev;
+            prev = current;
+            current = next ;
+        }
+        // now lets compare the LL
+        ListNode first =  head;
+        ListNode second = prev; 
+        while(second != null){
+            if(first.val != second.val){
+                return false; //because its not a palindrome 
+            }
+            first = first.next;
+            second = second .next;
         }
         return true;
-        
+
     }
 }
