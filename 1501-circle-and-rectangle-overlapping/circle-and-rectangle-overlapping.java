@@ -1,8 +1,19 @@
 class Solution {
-    public boolean checkOverlap(int r, int cx, int cy, int x1, int y1, int x2, int y2) {
-        int x = Math.max(x1, Math.min(cx, x2)) - cx;
-        int y = Math.max(y1, Math.min(cy, y2)) - cy;
+    public boolean checkOverlap(int r, int cx, int cy,
+                                int x1, int y1, int x2, int y2) {
 
-        return x * x + y * y <= r * r;
+        for (int x = x1; x <= x2; x++) {
+            for (int y = y1; y <= y2; y++) {
+
+                int dx = x - cx;
+                int dy = y - cy;
+
+                if (dx * dx + dy * dy <= r * r) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
